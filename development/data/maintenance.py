@@ -1,23 +1,30 @@
-import json
+# data/maintenance.py
 
-MAINTENANCE_FILE = "maintenance.json"
+maintenance_records = []
 
-def add_maintenance_record(record):
-    records = load_maintenance_records()
-    records.append(record)
-    save_maintenance_records(records)
+def add_maintenance(vehicle_id, date, description, cost):
+    try:
+        # Validate cost
+        if cost < 0:
+            raise ValueError("Cost cannot be negative.")
+        
+        record = {
+            'vehicle_id': vehicle_id,
+            'date': date,
+            'description': description,
+            'cost': cost
+        }
+        maintenance_records.append(record)
+        print("Maintenance record added successfully.")
+    except Exception as e:
+        print(f"Error adding maintenance record: {e}")
 
 def get_maintenance_records(vehicle_id):
-    records = load_maintenance_records()
-    return [r for r in records if r["vehicle_id"] == vehicle_id]
-
-def load_maintenance_records():
     try:
-        with open(MAINTENANCE_FILE, "r") as f:
-            return json.load(f)
-    except FileNotFoundError:
+        records = [record for record in maintenance_records if record['vehicle_id'] == vehicle_id]
+        if not records:
+            raise ValueError(f"No maintenance records found for Vehicle ID {vehicle_id}.")
+        return records
+    except Exception as e:
+        print(f"Error retrieving maintenance records: {e}")
         return []
-
-def save_maintenance_records(records):
-    with open(MAINTENANCE_FILE, "w") as f:
-        json.dump(records, f, indent=4)

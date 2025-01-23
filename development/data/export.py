@@ -1,20 +1,30 @@
+# data/export.py
+
 import csv
 import json
-from data.vehicle import get_vehicles
-from data.maintenance import get_maintenance_records
+from data.vehicle import vehicles
 
 def export_data_to_csv(filename):
-    vehicles = get_vehicles()
-    with open(filename, "w", newline="") as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(["Vehicle ID", "Make", "Model", "Year", "Mileage"])
-        for vehicle in vehicles:
-            writer.writerow([vehicle["id"], vehicle["make"], vehicle["model"], vehicle["year"], vehicle["mileage"]])
-    print(f"Data exported to {filename} successfully!")
+    try:
+        if not vehicles:
+            raise ValueError("No vehicles to export.")
+        
+        with open(filename, mode='w', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=['id', 'model', 'make', 'year'])
+            writer.writeheader()
+            for vehicle in vehicles:
+                writer.writerow(vehicle)
+        print(f"Data successfully exported to {filename}")
+    except Exception as e:
+        print(f"Error exporting data to CSV: {e}")
 
 def export_data_to_json(filename):
-    vehicles = get_vehicles()
-    maintenance_records = {vehicle["id"]: get_maintenance_records(vehicle["id"]) for vehicle in vehicles}
-    with open(filename, "w") as jsonfile:
-        json.dump({"vehicles": vehicles, "maintenance": maintenance_records}, jsonfile, indent=4)
-    print(f"Data exported to {filename} successfully!")
+    try:
+        if not vehicles:
+            raise ValueError("No vehicles to export.")
+        
+        with open(filename, mode='w') as file:
+            json.dump(vehicles, file, indent=4)
+        print(f"Data successfully exported to {filename}")
+    except Exception as e:
+        print(f"Error exporting data to JSON: {e}")

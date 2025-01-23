@@ -1,22 +1,29 @@
-from data.maintenance import add_maintenance_record, get_maintenance_records
+# features/maintenance_manager.py
+
+from data.maintenance import add_maintenance, get_maintenance_records
 
 def add_maintenance_interaction(vehicle_id):
-    service_type = input("Enter the type of maintenance (e.g., Oil Change, Tire Rotation): ")
-    date = input("Enter the date of maintenance (YYYY-MM-DD): ")
-    mileage = input("Enter the vehicle mileage at the time of maintenance: ")
-    record = {
-        "vehicle_id": vehicle_id,
-        "service_type": service_type,
-        "date": date,
-        "mileage": mileage,
-    }
-    add_maintenance_record(record)
-    print("Maintenance record added successfully!")
+    try:
+        print(f"\nAdding maintenance record for Vehicle ID {vehicle_id}:")
+        date = input("Enter Maintenance Date (YYYY-MM-DD): ")
+        description = input("Enter Maintenance Description: ")
+        cost = float(input("Enter Maintenance Cost: "))
+
+        add_maintenance(vehicle_id, date, description, cost)
+    except ValueError as e:
+        print(f"Invalid input: {e}")
+    except Exception as e:
+        print(f"Error: {e}")
 
 def view_maintenance_interaction(vehicle_id):
-    records = get_maintenance_records(vehicle_id)
-    if not records:
-        print("No maintenance records found for this vehicle.")
-        return
-    for record in records:
-        print(f"Date: {record['date']}, Service: {record['service_type']}, Mileage: {record['mileage']}")
+    try:
+        print(f"\nMaintenance Records for Vehicle ID {vehicle_id}:")
+        records = get_maintenance_records(vehicle_id)
+        
+        if not records:
+            raise ValueError(f"No maintenance records found for Vehicle ID {vehicle_id}.")
+        
+        for record in records:
+            print(f"Date: {record['date']}, Description: {record['description']}, Cost: {record['cost']}")
+    except Exception as e:
+        print(f"Error: {e}")
