@@ -1,10 +1,18 @@
+import io
+import sys
+
+# Make sure the path is correct and added to sys.path
+sys.path.append(r"G:\\practice\\Testing\\DemoProject\\Automotives\\development")
+
 from io import StringIO
 import pytest
 from unittest.mock import patch
+
+# Correct import for the add_vehicle_interaction function
 from development.features.vehicle_manager import add_vehicle_interaction
 
 def test_addVehicle():
-    with patch("buildins.input", side_effect=[101, "",""]):
+    with patch("builtins.input", side_effect=[101, "", ""]):
         with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
             add_vehicle_interaction()
             output = mock_stdout.getvalue()
